@@ -67,7 +67,8 @@ data = load_data(ticker_symbol, start_date, end_date)
 
 if data is not None:
     # --- Data Transformation ---
-    # Ensure the 'Date' column is in datetime format for Plotly
+    # Create a copy to avoid mutating the cached data
+    data = data.copy()
     data['Date'] = pd.to_datetime(data['Date'])
     # Perform analysis
     data = calculate_moving_averages(data)
