@@ -73,34 +73,38 @@ if data is not None:
     # Perform analysis
     data = calculate_moving_averages(data)
     data = calculate_bollinger_bands(data)
+    # Drop rows with NaN values from rolling calculations
+    data = data.dropna()
 
     st.header(f"Analysis for {ticker_symbol}")
 
     # --- Closing Price and Moving Averages Chart ---
     st.subheader("Closing Price & Moving Averages")
     fig_price = go.Figure()
-    fig_price.add_trace(go.Scatter(x=data['Date'], y=data['Close'], mode='lines', name='Close Price', line=dict(color='royalblue')))
-    fig_price.add_trace(go.Scatter(x=data['Date'], y=data['SMA_20'], mode='lines', name='SMA 20', line=dict(color='orange', dash='dash')))
-    fig_price.add_trace(go.Scatter(x=data['Date'], y=data['SMA_50'], mode='lines', name='SMA 50', line=dict(color='green', dash='dash')))
+    if data['Close'].notna().sum() > 0:
+        fig_price.add_trace(go.Scatter(x=data['Date'], y=data['Close'], mode='lines', name='Close Price', line=dict(color='royalblue')))
+        fig_price.add_trace(go.Scatter(x=data['Date'], y=data['SMA_20'], mode='lines', name='SMA 20', line=dict(color='orange', dash='dash')))
+        fig_price.add_trace(go.Scatter(x=data['Date'], y=data['SMA_50'], mode='lines', name='SMA 50', line=dict(color='green', dash='dash')))
     fig_price.update_layout(
         xaxis_title='Date',
         yaxis_title='Price (USD)',
         legend_title='Legend',
-        template='plotly_white'
+        template='plotly_dark'
     )
     st.plotly_chart(fig_price, use_container_width=True)
 
     # --- Bollinger Bands Chart ---
     st.subheader("Bollinger Bands")
     fig_bb = go.Figure()
-    fig_bb.add_trace(go.Scatter(x=data['Date'], y=data['Close'], mode='lines', name='Close Price', line=dict(color='royalblue')))
-    fig_bb.add_trace(go.Scatter(x=data['Date'], y=data['Bollinger_High'], mode='lines', name='Upper Band', line=dict(color='rgba(255,0,0,0.5)')))
-    fig_bb.add_trace(go.Scatter(x=data['Date'], y=data['Bollinger_Low'], mode='lines', name='Lower Band', line=dict(color='rgba(0,128,0,0.5)'), fill='tonexty', fillcolor='rgba(0,128,0,0.1)'))
+    if data['Close'].notna().sum() > 0:
+        fig_bb.add_trace(go.Scatter(x=data['Date'], y=data['Close'], mode='lines', name='Close Price', line=dict(color='royalblue')))
+        fig_bb.add_trace(go.Scatter(x=data['Date'], y=data['Bollinger_High'], mode='lines', name='Upper Band', line=dict(color='rgba(255,0,0,0.5)')))
+        fig_bb.add_trace(go.Scatter(x=data['Date'], y=data['Bollinger_Low'], mode='lines', name='Lower Band', line=dict(color='rgba(0,128,0,0.5)'), fill='tonexty', fillcolor='rgba(0,128,0,0.1)'))
     fig_bb.update_layout(
         xaxis_title='Date',
         yaxis_title='Price (USD)',
         legend_title='Legend',
-        template='plotly_white'
+        template='plotly_dark'
     )
     st.plotly_chart(fig_bb, use_container_width=True)
 
