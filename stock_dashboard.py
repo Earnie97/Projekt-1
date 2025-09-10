@@ -66,6 +66,9 @@ def calculate_bollinger_bands(data, window=20, num_std_dev=2):
 data = load_data(ticker_symbol, start_date, end_date)
 
 if data is not None:
+    # --- Data Transformation ---
+    # Ensure the 'Date' column is in datetime format for Plotly
+    data['Date'] = pd.to_datetime(data['Date'])
     # Perform analysis
     data = calculate_moving_averages(data)
     data = calculate_bollinger_bands(data)
